@@ -1,4 +1,9 @@
+import { aiChatRouter } from "@/server/api/routers/ai-chat";
+import { autosaveRouter } from "@/server/api/routers/autosave";
+import { chatRouter } from "@/server/api/routers/chat";
+import { draftRouter } from "@/server/api/routers/draft";
 import { postRouter } from "@/server/api/routers/post";
+import { versionRouter } from "@/server/api/routers/version";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 
 /**
@@ -8,6 +13,11 @@ import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
 	post: postRouter,
+	draft: draftRouter,
+	version: versionRouter,
+	chat: chatRouter,
+	aiChat: aiChatRouter,
+	autosave: autosaveRouter,
 });
 
 // export type definition of API
