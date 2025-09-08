@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { signIn, signUp } from "@/lib/auth-client";
+import { useState } from "react";
 
 type AuthMode = "signin" | "signup" | "magiclink";
 
@@ -11,7 +11,10 @@ export function AuthForm() {
 	const [password, setPassword] = useState("");
 	const [name, setName] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+	const [message, setMessage] = useState<{
+		type: "success" | "error";
+		text: string;
+	} | null>(null);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -27,9 +30,15 @@ export function AuthForm() {
 				});
 
 				if (error) {
-					setMessage({ type: "error", text: error.message || "Failed to send magic link" });
+					setMessage({
+						type: "error",
+						text: error.message || "Failed to send magic link",
+					});
 				} else {
-					setMessage({ type: "success", text: "Check your email for the magic link!" });
+					setMessage({
+						type: "success",
+						text: "Check your email for the magic link!",
+					});
 					setEmail("");
 				}
 			} else if (mode === "signin") {
@@ -40,7 +49,10 @@ export function AuthForm() {
 				});
 
 				if (error) {
-					setMessage({ type: "error", text: error.message || "Invalid email or password" });
+					setMessage({
+						type: "error",
+						text: error.message || "Invalid email or password",
+					});
 				} else {
 					// Successful sign in - the page will reload/redirect
 					window.location.href = "/";
@@ -54,7 +66,10 @@ export function AuthForm() {
 				});
 
 				if (error) {
-					setMessage({ type: "error", text: error.message || "Failed to create account" });
+					setMessage({
+						type: "error",
+						text: error.message || "Failed to create account",
+					});
 				} else {
 					// Successful sign up - the page will reload/redirect
 					window.location.href = "/";
@@ -68,14 +83,14 @@ export function AuthForm() {
 	};
 
 	return (
-		<div className="w-full max-w-md mx-auto">
-			<div className="bg-white/10 backdrop-blur-sm rounded-lg p-8">
+		<div className="mx-auto w-full max-w-md">
+			<div className="rounded-lg bg-white/10 p-8 backdrop-blur-sm">
 				{/* Mode Selector */}
-				<div className="flex rounded-lg bg-white/5 p-1 mb-6">
+				<div className="mb-6 flex rounded-lg bg-white/5 p-1">
 					<button
 						type="button"
 						onClick={() => setMode("signin")}
-						className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+						className={`flex-1 rounded-md px-4 py-2 font-medium text-sm transition-colors ${
 							mode === "signin"
 								? "bg-white/20 text-white"
 								: "text-white/70 hover:text-white"
@@ -86,7 +101,7 @@ export function AuthForm() {
 					<button
 						type="button"
 						onClick={() => setMode("signup")}
-						className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+						className={`flex-1 rounded-md px-4 py-2 font-medium text-sm transition-colors ${
 							mode === "signup"
 								? "bg-white/20 text-white"
 								: "text-white/70 hover:text-white"
@@ -97,7 +112,7 @@ export function AuthForm() {
 					<button
 						type="button"
 						onClick={() => setMode("magiclink")}
-						className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+						className={`flex-1 rounded-md px-4 py-2 font-medium text-sm transition-colors ${
 							mode === "magiclink"
 								? "bg-white/20 text-white"
 								: "text-white/70 hover:text-white"
@@ -111,7 +126,10 @@ export function AuthForm() {
 				<form onSubmit={handleSubmit} className="space-y-4">
 					{mode === "signup" && (
 						<div>
-							<label htmlFor="name" className="block text-sm font-medium text-white/90 mb-1">
+							<label
+								htmlFor="name"
+								className="mb-1 block font-medium text-sm text-white/90"
+							>
 								Name
 							</label>
 							<input
@@ -120,14 +138,17 @@ export function AuthForm() {
 								value={name}
 								onChange={(e) => setName(e.target.value)}
 								required={mode === "signup"}
-								className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-md text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+								className="w-full rounded-md border border-white/20 bg-white/10 px-3 py-2 text-white placeholder-white/50 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-500"
 								placeholder="John Doe"
 							/>
 						</div>
 					)}
 
 					<div>
-						<label htmlFor="email" className="block text-sm font-medium text-white/90 mb-1">
+						<label
+							htmlFor="email"
+							className="mb-1 block font-medium text-sm text-white/90"
+						>
 							Email
 						</label>
 						<input
@@ -136,14 +157,17 @@ export function AuthForm() {
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
 							required
-							className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-md text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+							className="w-full rounded-md border border-white/20 bg-white/10 px-3 py-2 text-white placeholder-white/50 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-500"
 							placeholder="you@example.com"
 						/>
 					</div>
 
 					{mode !== "magiclink" && (
 						<div>
-							<label htmlFor="password" className="block text-sm font-medium text-white/90 mb-1">
+							<label
+								htmlFor="password"
+								className="mb-1 block font-medium text-sm text-white/90"
+							>
 								Password
 							</label>
 							<input
@@ -152,7 +176,7 @@ export function AuthForm() {
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
 								required
-								className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-md text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+								className="w-full rounded-md border border-white/20 bg-white/10 px-3 py-2 text-white placeholder-white/50 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-500"
 								placeholder="••••••••"
 							/>
 						</div>
@@ -161,10 +185,10 @@ export function AuthForm() {
 					{/* Message Display */}
 					{message && (
 						<div
-							className={`p-3 rounded-md text-sm ${
+							className={`rounded-md p-3 text-sm ${
 								message.type === "success"
-									? "bg-green-500/20 text-green-100 border border-green-500/30"
-									: "bg-red-500/20 text-red-100 border border-red-500/30"
+									? "border border-green-500/30 bg-green-500/20 text-green-100"
+									: "border border-red-500/30 bg-red-500/20 text-red-100"
 							}`}
 						>
 							{message.text}
@@ -175,13 +199,29 @@ export function AuthForm() {
 					<button
 						type="submit"
 						disabled={isLoading}
-						className="w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-md transition-colors"
+						className="w-full rounded-md bg-purple-600 px-4 py-3 font-medium text-white transition-colors hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-50"
 					>
 						{isLoading ? (
 							<span className="flex items-center justify-center">
-								<svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-									<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-									<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+								<svg
+									className="-ml-1 mr-3 h-5 w-5 animate-spin text-white"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+								>
+									<circle
+										className="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										strokeWidth="4"
+									></circle>
+									<path
+										className="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+									></path>
 								</svg>
 								Processing...
 							</span>
