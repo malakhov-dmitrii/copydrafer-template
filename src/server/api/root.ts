@@ -1,3 +1,4 @@
+import { aiChatRouter } from "@/server/api/routers/ai-chat";
 import { autosaveRouter } from "@/server/api/routers/autosave";
 import { chatRouter } from "@/server/api/routers/chat";
 import { draftRouter } from "@/server/api/routers/draft";
@@ -15,6 +16,7 @@ export const appRouter = createTRPCRouter({
 	draft: draftRouter,
 	version: versionRouter,
 	chat: chatRouter,
+	aiChat: aiChatRouter,
 	autosave: autosaveRouter,
 });
 

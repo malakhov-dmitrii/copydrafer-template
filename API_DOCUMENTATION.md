@@ -248,20 +248,118 @@ const { data } = api.autosave.getRecentActivity.useQuery("draft-uuid");
 
 ## AI Service Integration
 
-The backend includes OpenAI integration for content generation and improvement. These features are accessed through the chat router.
+The backend uses Vercel AI SDK with OpenAI for intelligent content assistance. The AI features are accessed through the dedicated AI Chat router with streaming support.
 
-### Available AI Features
+### AI Chat Router (`api.aiChat.*`)
 
-1. **Content Generation** - Generate new content based on prompts
-2. **Content Improvement** - Enhance existing content
-3. **Platform Optimization** - Adapt content for specific platforms
-4. **Content Validation** - Check content against platform requirements
+#### Stream Chat Response (Real-time streaming)
+```typescript
+// Subscribe to streaming chat response
+const subscription = api.aiChat.streamChat.useSubscription({
+  conversationId: "conversation-uuid",
+  message: "How can I improve this post?",
+  draftId: "draft-uuid"
+}, {
+  onData: (data) => {
+    if (data.token) {
+      // Handle streaming token
+      console.log(data.token);
+    }
+    if (data.done) {
+      // Stream completed
+    }
+    if (data.error) {
+      // Handle error
+      console.error(data.error);
+    }
+  }
+});
+```
 
-### Rate Limiting
+#### Generate Content Suggestions
+```typescript
+const mutation = api.aiChat.generateSuggestions.useMutation();
 
-- 20 requests per minute per user
-- Automatic rate limit error handling
-- Retry logic should be implemented on frontend
+await mutation.mutateAsync({
+  draftId: "draft-uuid",
+  type: "improvement"  // 'improvement' | 'variation' | 'ideas'
+});
+
+// Returns suggestions text and usage stats
+```
+
+#### Validate Content
+```typescript
+const { data } = api.aiChat.validateContent.useQuery({
+  draftId: "draft-uuid"
+});
+
+// Returns: { isValid: boolean, issues: string[], suggestions: string[], score: number }
+```
+
+#### Quick Actions
+```typescript
+const mutation = api.aiChat.quickAction.useMutation();
+
+await mutation.mutateAsync({
+  draftId: "draft-uuid",
+  action: "improve_clarity"  
+  // Options: 'improve_clarity' | 'make_shorter' | 'make_longer' | 
+  //          'add_cta' | 'add_hook' | 'fix_grammar'
+});
+
+// Returns improved content
+```
+
+#### Generate Hashtags
+```typescript
+const mutation = api.aiChat.generateHashtags.useMutation();
+
+await mutation.mutateAsync({
+  draftId: "draft-uuid",
+  count: 10  // Number of hashtags to generate
+});
+
+// Returns: { hashtags: string[], reasoning: string }
+```
+
+#### Adapt to Different Platform
+```typescript
+const mutation = api.aiChat.adaptToPlatform.useMutation();
+
+await mutation.mutateAsync({
+  draftId: "draft-uuid",
+  targetPlatform: "linkedin"  // Target platform
+});
+
+// Returns adapted content for the new platform
+```
+
+### LLM Service Architecture
+
+The backend uses a centralized LLM service with:
+
+1. **Model Configurations**
+   - `fast` - GPT-3.5 for simple tasks
+   - `standard` - GPT-4 Turbo for content generation
+   - `advanced` - GPT-4 for complex tasks
+   - `creative` - High temperature for brainstorming
+   - `precise` - Low temperature for editing
+
+2. **Streaming Support**
+   - Real-time token streaming for chat
+   - Progress tracking for long operations
+   - Error recovery and retry logic
+
+3. **Rate Limiting**
+   - 20 requests per minute per user
+   - Automatic rate limit error handling
+   - Graceful degradation
+
+4. **Error Handling**
+   - Automatic retries with exponential backoff
+   - Detailed error messages
+   - Fallback strategies
 
 ## Database Schema
 
