@@ -293,3 +293,56 @@ export const chatMessagesRelations = relations(chatMessages, ({ one }) => ({
 		references: [aiConversations.id],
 	}),
 }));
+
+// AI Usage Tracking Tables
+export const aiUsage = pgTable("copydrafer_ai_usage", {
+	id: uuid("id").defaultRandom().primaryKey(),
+	userId: text("user_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	model: text("model").notNull(),
+	inputTokens: integer("input_tokens").notNull().default(0),
+	outputTokens: integer("output_tokens").notNull().default(0),
+	totalTokens: integer("total_tokens").notNull().default(0),
+	inputCost: real("input_cost").notNull().default(0),
+	outputCost: real("output_cost").notNull().default(0),
+	totalCost: real("total_cost").notNull().default(0),
+	category: text("category").notNull(),
+	metadata: jsonb("metadata"),
+	timestamp: timestamp("timestamp", { withTimezone: true })
+		.notNull()
+		.defaultNow(),
+});
+
+export const userQuotas = pgTable("copydrafer_user_quotas", {
+	id: uuid("id").defaultRandom().primaryKey(),
+	userId: text("user_id")
+		.notNull()
+		.unique()
+		.references(() => user.id, { onDelete: "cascade" }),
+	tier: text("tier", {
+		enum: ["free", "starter", "pro", "enterprise"],
+	})
+		.notNull()
+		.default("free"),
+	dailyTokenLimit: integer("daily_token_limit").notNull().default(10000),
+	monthlyTokenLimit: integer("monthly_token_limit").notNull().default(100000),
+	dailyCostLimit: real("daily_cost_limit").notNull().default(0.5),
+	monthlyCostLimit: real("monthly_cost_limit").notNull().default(5),
+	customLimits: jsonb("custom_limits"),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.notNull()
+		.defaultNow(),
+	updatedAt: timestamp("updated_at", { withTimezone: true })
+		.notNull()
+		.defaultNow(),
+});
+
+// AI Usage Relations
+export const aiUsageRelations = relations(aiUsage, ({ one }) => ({
+	user: one(user, { fields: [aiUsage.userId], references: [user.id] }),
+}));
+
+export const userQuotasRelations = relations(userQuotas, ({ one }) => ({
+	user: one(user, { fields: [userQuotas.userId], references: [user.id] }),
+}));

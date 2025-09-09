@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { env } from '@/env';
 import { TRPCError } from '@trpc/server';
 import type { CoreMessage } from 'ai';
+import { aiUsageTracker, enforceQuotas, trackAIUsage } from './ai-usage-tracker';
+import type { UsageCategory } from './ai-usage-tracker';
 
 /**
  * Centralized LLM Service for CopyDrafter
@@ -124,11 +126,16 @@ export class LLMService {
     system?: string;
     temperature?: number;
     maxTokens?: number;
+    category?: UsageCategory;
   }) {
     try {
       checkRateLimit(params.userId);
       
       const config = MODEL_CONFIGS[params.modelType || 'standard'];
+      const modelName = params.modelType || 'standard';
+      
+      // Check quotas before making the call
+      await enforceQuotas(params.userId, config.maxTokens);
       
       const result = await generateText({
         model: config.model,
@@ -137,6 +144,17 @@ export class LLMService {
         temperature: params.temperature ?? config.temperature,
         maxRetries: 2,
       });
+
+      // Track usage
+      if (result.usage) {
+        await trackAIUsage(
+          params.userId,
+          modelName === 'fast' ? 'gpt-3.5-turbo' : 
+          modelName === 'advanced' ? 'gpt-4' : 'gpt-4-turbo-preview',
+          result.usage,
+          params.category || 'content_generation'
+        );
+      }
 
       return {
         text: result.text,
@@ -159,11 +177,16 @@ export class LLMService {
     temperature?: number;
     maxTokens?: number;
     onChunk?: (chunk: string) => void;
+    category?: UsageCategory;
   }) {
     try {
       checkRateLimit(params.userId);
       
       const config = MODEL_CONFIGS[params.modelType || 'standard'];
+      const modelName = params.modelType || 'standard';
+      
+      // Check quotas before making the call
+      await enforceQuotas(params.userId, config.maxTokens);
       
       const result = await streamText({
         model: config.model,
@@ -172,6 +195,19 @@ export class LLMService {
         temperature: params.temperature ?? config.temperature,
         maxRetries: 2,
       });
+
+      // Track usage after streaming completes
+      result.usage.then(async (usage) => {
+        if (usage) {
+          await trackAIUsage(
+            params.userId,
+            modelName === 'fast' ? 'gpt-3.5-turbo' : 
+            modelName === 'advanced' ? 'gpt-4' : 'gpt-4-turbo-preview',
+            usage,
+            params.category || 'chat'
+          );
+        }
+      }).catch(console.error);
 
       return result;
     } catch (error) {
