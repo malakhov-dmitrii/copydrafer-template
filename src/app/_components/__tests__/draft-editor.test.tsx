@@ -28,24 +28,16 @@ describe("DraftEditor", () => {
 	});
 
 	it("renders draft title and content", () => {
-		render(
-			<DraftEditor
-				draft={mockDraft}
-				onSave={mockOnSave}
-			/>,
-		);
+		render(<DraftEditor draft={mockDraft} onSave={mockOnSave} />);
 
 		expect(screen.getByDisplayValue("Sample Draft")).toBeInTheDocument();
-		expect(screen.getByText("This is the initial content of the draft.")).toBeInTheDocument();
+		expect(
+			screen.getByText("This is the initial content of the draft."),
+		).toBeInTheDocument();
 	});
 
 	it("allows editing draft title", async () => {
-		render(
-			<DraftEditor
-				draft={mockDraft}
-				onSave={mockOnSave}
-			/>,
-		);
+		render(<DraftEditor draft={mockDraft} onSave={mockOnSave} />);
 
 		const titleInput = screen.getByDisplayValue("Sample Draft");
 		fireEvent.change(titleInput, { target: { value: "Updated Title" } });
@@ -56,15 +48,14 @@ describe("DraftEditor", () => {
 	});
 
 	it("allows editing draft description", async () => {
-		render(
-			<DraftEditor
-				draft={mockDraft}
-				onSave={mockOnSave}
-			/>,
-		);
+		render(<DraftEditor draft={mockDraft} onSave={mockOnSave} />);
 
-		const descriptionInput = screen.getByDisplayValue("A test draft for unit testing");
-		fireEvent.change(descriptionInput, { target: { value: "Updated description" } });
+		const descriptionInput = screen.getByDisplayValue(
+			"A test draft for unit testing",
+		);
+		fireEvent.change(descriptionInput, {
+			target: { value: "Updated description" },
+		});
 
 		await waitFor(() => {
 			expect(descriptionInput).toHaveValue("Updated description");
@@ -72,13 +63,7 @@ describe("DraftEditor", () => {
 	});
 
 	it("displays draft metadata", () => {
-		render(
-			<DraftEditor
-				draft={mockDraft}
-				onSave={mockOnSave}
-				showMetadata
-			/>,
-		);
+		render(<DraftEditor draft={mockDraft} onSave={mockOnSave} showMetadata />);
 
 		expect(screen.getByText(/created.*jan 1, 2024/i)).toBeInTheDocument();
 		expect(screen.getByText(/updated.*jan 2, 2024/i)).toBeInTheDocument();
@@ -86,12 +71,7 @@ describe("DraftEditor", () => {
 	});
 
 	it("shows draft status badge", () => {
-		render(
-			<DraftEditor
-				draft={mockDraft}
-				onSave={mockOnSave}
-			/>,
-		);
+		render(<DraftEditor draft={mockDraft} onSave={mockOnSave} />);
 
 		expect(screen.getByText("draft")).toBeInTheDocument();
 	});
@@ -142,7 +122,9 @@ describe("DraftEditor", () => {
 			/>,
 		);
 
-		const contentEditor = screen.getByRole("textbox", { name: /content editor/i });
+		const contentEditor = screen.getByRole("textbox", {
+			name: /content editor/i,
+		});
 		fireEvent.change(contentEditor, { target: { value: "Updated content" } });
 
 		vi.advanceTimersByTime(2000);
@@ -163,12 +145,7 @@ describe("DraftEditor", () => {
 			() => new Promise((resolve) => setTimeout(resolve, 1000)),
 		);
 
-		render(
-			<DraftEditor
-				draft={mockDraft}
-				onSave={mockOnSave}
-			/>,
-		);
+		render(<DraftEditor draft={mockDraft} onSave={mockOnSave} />);
 
 		const saveButton = screen.getByText(/save draft/i);
 		fireEvent.click(saveButton);
@@ -179,12 +156,7 @@ describe("DraftEditor", () => {
 	});
 
 	it("handles keyboard shortcut for save (Cmd+S)", async () => {
-		render(
-			<DraftEditor
-				draft={mockDraft}
-				onSave={mockOnSave}
-			/>,
-		);
+		render(<DraftEditor draft={mockDraft} onSave={mockOnSave} />);
 
 		fireEvent.keyDown(document, { key: "s", metaKey: true });
 
@@ -273,18 +245,18 @@ describe("DraftEditor", () => {
 	});
 
 	it("displays word count live update", async () => {
-		render(
-			<DraftEditor
-				draft={mockDraft}
-				onSave={mockOnSave}
-				showWordCount
-			/>,
-		);
+		render(<DraftEditor draft={mockDraft} onSave={mockOnSave} showWordCount />);
 
 		expect(screen.getByText(/8 words/i)).toBeInTheDocument();
 
-		const contentEditor = screen.getByRole("textbox", { name: /content editor/i });
-		fireEvent.change(contentEditor, { target: { value: "This is a much longer piece of content with more words" } });
+		const contentEditor = screen.getByRole("textbox", {
+			name: /content editor/i,
+		});
+		fireEvent.change(contentEditor, {
+			target: {
+				value: "This is a much longer piece of content with more words",
+			},
+		});
 
 		await waitFor(() => {
 			expect(screen.getByText(/11 words/i)).toBeInTheDocument();
@@ -292,13 +264,7 @@ describe("DraftEditor", () => {
 	});
 
 	it("shows character count when enabled", () => {
-		render(
-			<DraftEditor
-				draft={mockDraft}
-				onSave={mockOnSave}
-				showCharCount
-			/>,
-		);
+		render(<DraftEditor draft={mockDraft} onSave={mockOnSave} showCharCount />);
 
 		expect(screen.getByText(/41 characters/i)).toBeInTheDocument();
 	});
@@ -325,11 +291,7 @@ describe("DraftEditor", () => {
 
 	it("shows unsaved changes warning", async () => {
 		render(
-			<DraftEditor
-				draft={mockDraft}
-				onSave={mockOnSave}
-				showUnsavedWarning
-			/>,
+			<DraftEditor draft={mockDraft} onSave={mockOnSave} showUnsavedWarning />,
 		);
 
 		const titleInput = screen.getByDisplayValue("Sample Draft");
@@ -342,11 +304,7 @@ describe("DraftEditor", () => {
 
 	it("integrates with version selector", () => {
 		render(
-			<DraftEditor
-				draft={mockDraft}
-				onSave={mockOnSave}
-				showVersionSelector
-			/>,
+			<DraftEditor draft={mockDraft} onSave={mockOnSave} showVersionSelector />,
 		);
 
 		expect(screen.getByLabelText(/version selector/i)).toBeInTheDocument();
@@ -354,29 +312,21 @@ describe("DraftEditor", () => {
 
 	it("shows AI assistant panel when enabled", () => {
 		render(
-			<DraftEditor
-				draft={mockDraft}
-				onSave={mockOnSave}
-				showAIAssistant
-			/>,
+			<DraftEditor draft={mockDraft} onSave={mockOnSave} showAIAssistant />,
 		);
 
 		expect(screen.getByText(/ai assistant/i)).toBeInTheDocument();
 	});
 
 	it("handles read-only mode", () => {
-		render(
-			<DraftEditor
-				draft={mockDraft}
-				onSave={mockOnSave}
-				readOnly
-			/>,
-		);
+		render(<DraftEditor draft={mockDraft} onSave={mockOnSave} readOnly />);
 
 		const titleInput = screen.getByDisplayValue("Sample Draft");
 		expect(titleInput).toBeDisabled();
 
-		const contentEditor = screen.getByRole("textbox", { name: /content editor/i });
+		const contentEditor = screen.getByRole("textbox", {
+			name: /content editor/i,
+		});
 		expect(contentEditor).toHaveAttribute("contentEditable", "false");
 
 		expect(screen.queryByText(/save draft/i)).not.toBeInTheDocument();

@@ -29,29 +29,34 @@ interface DraftState {
 
 	// Actions
 	setDrafts: (drafts: Draft[]) => void;
-	addDraft: (draft: Omit<Draft, "id" | "createdAt" | "updatedAt" | "wordCount" | "versionCount">) => Draft;
+	addDraft: (
+		draft: Omit<
+			Draft,
+			"id" | "createdAt" | "updatedAt" | "wordCount" | "versionCount"
+		>,
+	) => Draft;
 	updateDraft: (draftId: string, updates: Partial<Draft>) => void;
 	deleteDraft: (draftId: string) => void;
 	duplicateDraft: (draftId: string) => Draft | null;
 	selectDraft: (draftId: string | null) => void;
 	publishDraft: (draftId: string) => void;
 	archiveDraft: (draftId: string) => void;
-	
+
 	// Tag management
 	addTagToDraft: (draftId: string, tag: string) => void;
 	removeTagFromDraft: (draftId: string, tag: string) => void;
 	getAllTags: () => string[];
-	
+
 	// Search and filter
 	setSearchTerm: (term: string) => void;
 	setStatusFilter: (status: DraftState["statusFilter"]) => void;
 	toggleTagFilter: (tag: string) => void;
 	clearFilters: () => void;
-	
+
 	// Sorting
 	setSortBy: (sortBy: DraftState["sortBy"]) => void;
 	setSortOrder: (order: DraftState["sortOrder"]) => void;
-	
+
 	// Utility
 	getFilteredDrafts: () => Draft[];
 	getDraftById: (draftId: string) => Draft | undefined;
@@ -84,7 +89,9 @@ export const useDraftStore = create<DraftState>()(
 						id: `draft-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
 						createdAt: new Date(),
 						updatedAt: new Date(),
-						wordCount: draftData.content ? draftData.content.split(/\s+/).length : 0,
+						wordCount: draftData.content
+							? draftData.content.split(/\s+/).length
+							: 0,
 						versionCount: 1,
 					};
 					set((state) => ({
@@ -115,7 +122,8 @@ export const useDraftStore = create<DraftState>()(
 				deleteDraft: (draftId) =>
 					set((state) => ({
 						drafts: state.drafts.filter((draft) => draft.id !== draftId),
-						currentDraftId: state.currentDraftId === draftId ? null : state.currentDraftId,
+						currentDraftId:
+							state.currentDraftId === draftId ? null : state.currentDraftId,
 					})),
 
 				// Duplicate a draft
@@ -168,7 +176,11 @@ export const useDraftStore = create<DraftState>()(
 					set((state) => ({
 						drafts: state.drafts.map((draft) =>
 							draft.id === draftId && !draft.tags.includes(tag)
-								? { ...draft, tags: [...draft.tags, tag], updatedAt: new Date() }
+								? {
+										...draft,
+										tags: [...draft.tags, tag],
+										updatedAt: new Date(),
+									}
 								: draft,
 						),
 					})),
@@ -247,13 +259,17 @@ export const useDraftStore = create<DraftState>()(
 
 					// Apply status filter
 					if (state.statusFilter !== "all") {
-						filtered = filtered.filter((draft) => draft.status === state.statusFilter);
+						filtered = filtered.filter(
+							(draft) => draft.status === state.statusFilter,
+						);
 					}
 
 					// Apply tag filter
 					if (state.tagFilter.size > 0) {
 						filtered = filtered.filter((draft) =>
-							Array.from(state.tagFilter).some((tag) => draft.tags.includes(tag)),
+							Array.from(state.tagFilter).some((tag) =>
+								draft.tags.includes(tag),
+							),
 						);
 					}
 
@@ -278,7 +294,8 @@ export const useDraftStore = create<DraftState>()(
 				},
 
 				// Get draft by ID
-				getDraftById: (draftId) => get().drafts.find((draft) => draft.id === draftId),
+				getDraftById: (draftId) =>
+					get().drafts.find((draft) => draft.id === draftId),
 
 				// Set loading state
 				setLoading: (isLoading) => set({ isLoading }),

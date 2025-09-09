@@ -104,9 +104,13 @@ export const useVersionStore = create<VersionState>()(
 						return {
 							versions: newVersions,
 							currentVersionId:
-								state.currentVersionId === versionId ? null : state.currentVersionId,
+								state.currentVersionId === versionId
+									? null
+									: state.currentVersionId,
 							compareVersionId:
-								state.compareVersionId === versionId ? null : state.compareVersionId,
+								state.compareVersionId === versionId
+									? null
+									: state.compareVersionId,
 						};
 					}),
 

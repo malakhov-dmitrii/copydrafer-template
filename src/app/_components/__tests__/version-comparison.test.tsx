@@ -217,7 +217,7 @@ describe("VersionComparison", () => {
 		expect(changeCheckboxes.length).toBeGreaterThan(0);
 
 		fireEvent.click(changeCheckboxes[0]);
-		
+
 		await waitFor(() => {
 			expect(changeCheckboxes[0]).toBeChecked();
 		});

@@ -82,8 +82,12 @@ export function VersionComparison({
 }: VersionComparisonProps) {
 	const [viewMode, setViewMode] = useState<"split" | "unified">("split");
 	const [showMergeDialog, setShowMergeDialog] = useState(false);
-	const [mergeStrategy, setMergeStrategy] = useState<"left" | "right" | "custom">("right");
-	const [selectedChanges, setSelectedChanges] = useState<Set<number>>(new Set());
+	const [mergeStrategy, setMergeStrategy] = useState<
+		"left" | "right" | "custom"
+	>("right");
+	const [selectedChanges, setSelectedChanges] = useState<Set<number>>(
+		new Set(),
+	);
 
 	const diffSegments = useMemo((): DiffSegment[] => {
 		if (!showDiff) return [];
@@ -91,7 +95,7 @@ export function VersionComparison({
 		const leftWords = leftVersion.content.split(/\s+/);
 		const rightWords = rightVersion.content.split(/\s+/);
 		const segments: DiffSegment[] = [];
-		
+
 		let i = 0;
 		let j = 0;
 		let segmentIndex = 0;
@@ -116,7 +120,11 @@ export function VersionComparison({
 
 			if (leftWords[i] === rightWords[j]) {
 				const unchangedStart = i;
-				while (i < leftWords.length && j < rightWords.length && leftWords[i] === rightWords[j]) {
+				while (
+					i < leftWords.length &&
+					j < rightWords.length &&
+					leftWords[i] === rightWords[j]
+				) {
 					i++;
 					j++;
 				}
@@ -187,10 +195,16 @@ export function VersionComparison({
 				const mergedContent = diffSegments
 					.map((segment) => {
 						if (segment.type === "unchanged") return segment.content;
-						if (segment.type === "added" && selectedChanges.has(segment.index)) {
+						if (
+							segment.type === "added" &&
+							selectedChanges.has(segment.index)
+						) {
 							return segment.content;
 						}
-						if (segment.type === "removed" && !selectedChanges.has(segment.index)) {
+						if (
+							segment.type === "removed" &&
+							!selectedChanges.has(segment.index)
+						) {
 							return segment.content;
 						}
 						return "";
@@ -203,7 +217,13 @@ export function VersionComparison({
 			}
 			setShowMergeDialog(false);
 		}
-	}, [onMerge, mergeStrategy, granularSelection, selectedChanges, diffSegments]);
+	}, [
+		onMerge,
+		mergeStrategy,
+		granularSelection,
+		selectedChanges,
+		diffSegments,
+	]);
 
 	const toggleChangeSelection = useCallback((index: number) => {
 		setSelectedChanges((prev) => {
@@ -220,7 +240,10 @@ export function VersionComparison({
 	if (loading) {
 		return (
 			<div className={cn("flex items-center justify-center p-8", className)}>
-				<Loader2 className="h-6 w-6 animate-spin" aria-label="Loading comparison" />
+				<Loader2
+					className="h-6 w-6 animate-spin"
+					aria-label="Loading comparison"
+				/>
 			</div>
 		);
 	}
@@ -238,8 +261,10 @@ export function VersionComparison({
 						data-testid={`diff-${segment.type}-${segment.index}`}
 						className={cn(
 							"inline",
-							segment.type === "added" && "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200",
-							segment.type === "removed" && "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200",
+							segment.type === "added" &&
+								"bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200",
+							segment.type === "removed" &&
+								"bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200",
 							segment.type === "unchanged" && "text-foreground",
 						)}
 					>
@@ -263,12 +288,19 @@ export function VersionComparison({
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					<Label className="text-sm">View Mode:</Label>
-					<Tabs value={viewMode} onValueChange={(v) => setViewMode(v as "split" | "unified")}>
+					<Tabs
+						value={viewMode}
+						onValueChange={(v) => setViewMode(v as "split" | "unified")}
+					>
 						<TabsList className="h-8">
 							<TabsTrigger value="split" className="text-xs">
 								Split View
 							</TabsTrigger>
-							<TabsTrigger value="unified" className="text-xs" aria-label="Unified view">
+							<TabsTrigger
+								value="unified"
+								className="text-xs"
+								aria-label="Unified view"
+							>
 								Unified View
 							</TabsTrigger>
 						</TabsList>
@@ -290,13 +322,22 @@ export function VersionComparison({
 							</Button>
 						)}
 						{onMerge && (
-							<Button size="sm" variant="secondary" onClick={() => setShowMergeDialog(true)}>
+							<Button
+								size="sm"
+								variant="secondary"
+								onClick={() => setShowMergeDialog(true)}
+							>
 								<GitMerge className="mr-1 h-3 w-3" />
 								Merge Versions
 							</Button>
 						)}
 						{onExport && (
-							<Button size="sm" variant="ghost" onClick={onExport} aria-label="Export comparison">
+							<Button
+								size="sm"
+								variant="ghost"
+								onClick={onExport}
+								aria-label="Export comparison"
+							>
 								<Download className="h-4 w-4" />
 							</Button>
 						)}
@@ -321,8 +362,12 @@ export function VersionComparison({
 									<span>{stats.leftWords}</span>
 									<span className="text-muted-foreground">→</span>
 									<span>{stats.rightWords}</span>
-									<Badge variant={stats.wordDiff > 0 ? "default" : "secondary"} className="ml-2">
-										{stats.wordDiff > 0 ? "+" : ""}{stats.wordDiff}
+									<Badge
+										variant={stats.wordDiff > 0 ? "default" : "secondary"}
+										className="ml-2"
+									>
+										{stats.wordDiff > 0 ? "+" : ""}
+										{stats.wordDiff}
 									</Badge>
 								</div>
 							</div>
@@ -332,8 +377,12 @@ export function VersionComparison({
 									<span>{stats.leftChars}</span>
 									<span className="text-muted-foreground">→</span>
 									<span>{stats.rightChars}</span>
-									<Badge variant={stats.charDiff > 0 ? "default" : "secondary"} className="ml-2">
-										{stats.charDiff > 0 ? "+" : ""}{stats.charDiff}
+									<Badge
+										variant={stats.charDiff > 0 ? "default" : "secondary"}
+										className="ml-2"
+									>
+										{stats.charDiff > 0 ? "+" : ""}
+										{stats.charDiff}
 									</Badge>
 								</div>
 							</div>
@@ -344,7 +393,10 @@ export function VersionComparison({
 
 			{/* Comparison View */}
 			{viewMode === "split" ? (
-				<div className="grid grid-cols-2 gap-4" data-testid="version-comparison">
+				<div
+					className="grid grid-cols-2 gap-4"
+					data-testid="version-comparison"
+				>
 					<Card>
 						<CardHeader className="pb-3">
 							<CardTitle className="flex items-center justify-between text-sm">
@@ -418,7 +470,10 @@ export function VersionComparison({
 						</DialogDescription>
 					</DialogHeader>
 					<div className="space-y-4 py-4">
-						<RadioGroup value={mergeStrategy} onValueChange={(v) => setMergeStrategy(v as typeof mergeStrategy)}>
+						<RadioGroup
+							value={mergeStrategy}
+							onValueChange={(v) => setMergeStrategy(v as typeof mergeStrategy)}
+						>
 							<div className="flex items-center space-x-2">
 								<RadioGroupItem value="left" id="left" />
 								<Label htmlFor="left">Keep {leftVersion.name}</Label>
