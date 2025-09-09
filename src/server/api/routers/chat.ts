@@ -172,7 +172,7 @@ export const chatRouter = createTRPCRouter({
 				? and(
 						eq(chatMessages.conversationId, input.conversationId),
 						sql`${chatMessages.createdAt} < (SELECT created_at FROM ${chatMessages} WHERE id = ${input.cursor})`,
-				  )
+					)
 				: eq(chatMessages.conversationId, input.conversationId);
 
 			const messages = await ctx.db

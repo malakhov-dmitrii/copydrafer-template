@@ -50,25 +50,17 @@ describe("DraftList", () => {
 	});
 
 	it("renders all drafts", () => {
-		render(
-			<DraftList
-				drafts={mockDrafts}
-				onDraftSelect={mockOnDraftSelect}
-			/>,
-		);
+		render(<DraftList drafts={mockDrafts} onDraftSelect={mockOnDraftSelect} />);
 
-		expect(screen.getByText("Blog Post: Getting Started with React")).toBeInTheDocument();
+		expect(
+			screen.getByText("Blog Post: Getting Started with React"),
+		).toBeInTheDocument();
 		expect(screen.getByText("Product Launch Announcement")).toBeInTheDocument();
 		expect(screen.getByText("Email Campaign: Summer Sale")).toBeInTheDocument();
 	});
 
 	it("displays draft metadata correctly", () => {
-		render(
-			<DraftList
-				drafts={mockDrafts}
-				onDraftSelect={mockOnDraftSelect}
-			/>,
-		);
+		render(<DraftList drafts={mockDrafts} onDraftSelect={mockOnDraftSelect} />);
 
 		expect(screen.getByText("1,500 words")).toBeInTheDocument();
 		expect(screen.getByText("3 versions")).toBeInTheDocument();
@@ -76,12 +68,7 @@ describe("DraftList", () => {
 	});
 
 	it("shows status badges for drafts", () => {
-		render(
-			<DraftList
-				drafts={mockDrafts}
-				onDraftSelect={mockOnDraftSelect}
-			/>,
-		);
+		render(<DraftList drafts={mockDrafts} onDraftSelect={mockOnDraftSelect} />);
 
 		expect(screen.getByText("draft")).toBeInTheDocument();
 		expect(screen.getByText("published")).toBeInTheDocument();
@@ -89,14 +76,11 @@ describe("DraftList", () => {
 	});
 
 	it("calls onDraftSelect when clicking a draft", async () => {
-		render(
-			<DraftList
-				drafts={mockDrafts}
-				onDraftSelect={mockOnDraftSelect}
-			/>,
-		);
+		render(<DraftList drafts={mockDrafts} onDraftSelect={mockOnDraftSelect} />);
 
-		const firstDraft = screen.getByText("Blog Post: Getting Started with React");
+		const firstDraft = screen.getByText(
+			"Blog Post: Getting Started with React",
+		);
 		fireEvent.click(firstDraft);
 
 		await waitFor(() => {
@@ -147,9 +131,15 @@ describe("DraftList", () => {
 		fireEvent.change(searchInput, { target: { value: "React" } });
 
 		await waitFor(() => {
-			expect(screen.getByText("Blog Post: Getting Started with React")).toBeInTheDocument();
-			expect(screen.queryByText("Product Launch Announcement")).not.toBeInTheDocument();
-			expect(screen.queryByText("Email Campaign: Summer Sale")).not.toBeInTheDocument();
+			expect(
+				screen.getByText("Blog Post: Getting Started with React"),
+			).toBeInTheDocument();
+			expect(
+				screen.queryByText("Product Launch Announcement"),
+			).not.toBeInTheDocument();
+			expect(
+				screen.queryByText("Email Campaign: Summer Sale"),
+			).not.toBeInTheDocument();
 		});
 	});
 
@@ -166,9 +156,15 @@ describe("DraftList", () => {
 		fireEvent.change(statusFilter, { target: { value: "published" } });
 
 		await waitFor(() => {
-			expect(screen.queryByText("Blog Post: Getting Started with React")).not.toBeInTheDocument();
-			expect(screen.getByText("Product Launch Announcement")).toBeInTheDocument();
-			expect(screen.queryByText("Email Campaign: Summer Sale")).not.toBeInTheDocument();
+			expect(
+				screen.queryByText("Blog Post: Getting Started with React"),
+			).not.toBeInTheDocument();
+			expect(
+				screen.getByText("Product Launch Announcement"),
+			).toBeInTheDocument();
+			expect(
+				screen.queryByText("Email Campaign: Summer Sale"),
+			).not.toBeInTheDocument();
 		});
 	});
 
@@ -185,8 +181,12 @@ describe("DraftList", () => {
 		fireEvent.click(tagFilter);
 
 		await waitFor(() => {
-			expect(screen.getByText("Blog Post: Getting Started with React")).toBeInTheDocument();
-			expect(screen.queryByText("Product Launch Announcement")).not.toBeInTheDocument();
+			expect(
+				screen.getByText("Blog Post: Getting Started with React"),
+			).toBeInTheDocument();
+			expect(
+				screen.queryByText("Product Launch Announcement"),
+			).not.toBeInTheDocument();
 		});
 	});
 
@@ -270,7 +270,9 @@ describe("DraftList", () => {
 
 		await waitFor(() => {
 			expect(screen.getByText(/are you sure/i)).toBeInTheDocument();
-			expect(screen.getByText(/this action cannot be undone/i)).toBeInTheDocument();
+			expect(
+				screen.getByText(/this action cannot be undone/i),
+			).toBeInTheDocument();
 		});
 	});
 
@@ -313,13 +315,7 @@ describe("DraftList", () => {
 	});
 
 	it("shows loading state", () => {
-		render(
-			<DraftList
-				drafts={[]}
-				onDraftSelect={mockOnDraftSelect}
-				loading
-			/>,
-		);
+		render(<DraftList drafts={[]} onDraftSelect={mockOnDraftSelect} loading />);
 
 		expect(screen.getByLabelText(/loading drafts/i)).toBeInTheDocument();
 	});

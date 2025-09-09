@@ -33,7 +33,7 @@ export default function DraftEditorPage() {
 	if (!draft) {
 		return (
 			<div className="flex h-screen flex-col items-center justify-center">
-				<h2 className="mb-4 text-2xl font-bold">Draft not found</h2>
+				<h2 className="mb-4 font-bold text-2xl">Draft not found</h2>
 				<p className="mb-8 text-muted-foreground">
 					The draft you're looking for doesn't exist or has been deleted.
 				</p>
@@ -74,11 +74,7 @@ export default function DraftEditorPage() {
 							Back to Drafts
 						</Button>
 					</div>
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => router.push("/")}
-					>
+					<Button variant="outline" size="sm" onClick={() => router.push("/")}>
 						<LayoutDashboard className="mr-2 h-4 w-4" />
 						Dashboard
 					</Button>
