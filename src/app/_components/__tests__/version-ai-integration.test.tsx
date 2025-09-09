@@ -54,7 +54,9 @@ describe("VersionAIIntegration", () => {
 		);
 
 		expect(screen.getByText(/Improved clarity/)).toBeInTheDocument();
-		expect(screen.getByText(/Added more specific examples/)).toBeInTheDocument();
+		expect(
+			screen.getByText(/Added more specific examples/),
+		).toBeInTheDocument();
 		expect(screen.getByText(/Enhanced conclusion/)).toBeInTheDocument();
 	});
 
@@ -183,9 +185,7 @@ describe("VersionAIIntegration", () => {
 			/>,
 		);
 
-		expect(
-			screen.getByText(/Based on SEO best practices/),
-		).toBeInTheDocument();
+		expect(screen.getByText(/Based on SEO best practices/)).toBeInTheDocument();
 	});
 
 	it("handles low confidence warning", () => {

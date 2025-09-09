@@ -3,7 +3,13 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
 	Dialog,
@@ -83,7 +89,9 @@ export function VersionAIIntegration({
 	promptForName = false,
 	className,
 }: VersionAIIntegrationProps) {
-	const [selectedSuggestions, setSelectedSuggestions] = useState<Set<string>>(new Set());
+	const [selectedSuggestions, setSelectedSuggestions] = useState<Set<string>>(
+		new Set(),
+	);
 	const [isCreating, setIsCreating] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
 	const [editedContent, setEditedContent] = useState("");
@@ -92,13 +100,15 @@ export function VersionAIIntegration({
 	const [selectedTab, setSelectedTab] = useState("0");
 
 	const responses = aiResponses || (aiResponse ? [aiResponse] : []);
-	const activeResponse = responses[parseInt(selectedTab)] || responses[0];
+	const activeResponse =
+		responses[Number.parseInt(selectedTab)] || responses[0];
 
 	const handleCreateVersion = useCallback(async () => {
 		if (!activeResponse) return;
 
 		const finalContent = isEditing ? editedContent : activeResponse.content;
-		const finalName = versionName || `AI Generated - ${new Date().toLocaleString()}`;
+		const finalName =
+			versionName || `AI Generated - ${new Date().toLocaleString()}`;
 
 		if (promptForName && !versionName) {
 			setShowNameDialog(true);
@@ -166,21 +176,26 @@ export function VersionAIIntegration({
 				<CardContent className="flex flex-col items-center justify-center py-8">
 					<Brain className="mb-4 h-12 w-12 text-muted-foreground/50" />
 					<p className="text-center text-muted-foreground">
-						No AI response available. Generate content with AI to create versions.
+						No AI response available. Generate content with AI to create
+						versions.
 					</p>
 				</CardContent>
 			</Card>
 		);
 	}
 
-	const isLowConfidence = activeResponse.confidence && activeResponse.confidence < 0.5;
+	const isLowConfidence =
+		activeResponse.confidence && activeResponse.confidence < 0.5;
 
 	return (
 		<div className={cn("space-y-4", className)}>
 			{/* Multiple Responses Tabs */}
 			{responses.length > 1 && (
 				<Tabs value={selectedTab} onValueChange={setSelectedTab}>
-					<TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${responses.length}, 1fr)` }}>
+					<TabsList
+						className="grid w-full"
+						style={{ gridTemplateColumns: `repeat(${responses.length}, 1fr)` }}
+					>
 						{responses.map((_, index) => (
 							<TabsTrigger key={index} value={index.toString()}>
 								Option {index + 1}
@@ -195,7 +210,7 @@ export function VersionAIIntegration({
 				<div className="space-y-2">
 					<div className="flex items-center justify-between">
 						<Label className="text-sm">AI Confidence</Label>
-						<span className="text-sm font-medium">
+						<span className="font-medium text-sm">
 							{Math.round(activeResponse.confidence * 100)}%
 						</span>
 					</div>
@@ -205,7 +220,8 @@ export function VersionAIIntegration({
 							<AlertTriangle className="h-4 w-4" />
 							<AlertTitle>Low Confidence</AlertTitle>
 							<AlertDescription>
-								The AI has low confidence in this response. Consider reviewing carefully or regenerating.
+								The AI has low confidence in this response. Consider reviewing
+								carefully or regenerating.
 							</AlertDescription>
 						</Alert>
 					)}
@@ -222,7 +238,9 @@ export function VersionAIIntegration({
 						</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<p className="text-muted-foreground text-sm">{activeResponse.reasoning}</p>
+						<p className="text-muted-foreground text-sm">
+							{activeResponse.reasoning}
+						</p>
 					</CardContent>
 				</Card>
 			)}
@@ -310,7 +328,7 @@ export function VersionAIIntegration({
 									/>
 									<Label
 										htmlFor={`suggestion-${index}`}
-										className="flex-1 cursor-pointer text-sm font-normal"
+										className="flex-1 cursor-pointer font-normal text-sm"
 									>
 										<div className="flex items-start gap-2">
 											<TrendingUp className="mt-0.5 h-3 w-3 text-primary" />
@@ -356,13 +374,13 @@ export function VersionAIIntegration({
 			{/* Action Buttons */}
 			<div className="flex justify-end gap-2">
 				{!isEditing && (
-					<Button
-						onClick={handleCreateVersion}
-						disabled={isCreating}
-					>
+					<Button onClick={handleCreateVersion} disabled={isCreating}>
 						{isCreating ? (
 							<>
-								<Loader2 className="mr-2 h-4 w-4 animate-spin" aria-label="Creating version" />
+								<Loader2
+									className="mr-2 h-4 w-4 animate-spin"
+									aria-label="Creating version"
+								/>
 								Creating Version...
 							</>
 						) : (

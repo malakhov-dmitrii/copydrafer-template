@@ -78,7 +78,10 @@ export function VersionSelector({
 	);
 
 	const sortedVersions = useMemo(
-		() => [...versions].sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()),
+		() =>
+			[...versions].sort(
+				(a, b) => b.updatedAt.getTime() - a.updatedAt.getTime(),
+			),
 		[versions],
 	);
 
@@ -96,7 +99,9 @@ export function VersionSelector({
 		return (
 			<div className={cn("flex items-center gap-2", className)}>
 				<Loader2 className="h-4 w-4 animate-spin" aria-label="Loading" />
-				<span className="text-muted-foreground text-sm">Loading versions...</span>
+				<span className="text-muted-foreground text-sm">
+					Loading versions...
+				</span>
 			</div>
 		);
 	}
@@ -139,7 +144,9 @@ export function VersionSelector({
 				>
 					<div className="flex items-center gap-2">
 						<GitBranch className="h-4 w-4" />
-						<span className="truncate">{currentVersion?.name || "Select Version"}</span>
+						<span className="truncate">
+							{currentVersion?.name || "Select Version"}
+						</span>
 						{currentVersion?.aiGenerated && (
 							<Sparkles className="h-3 w-3 text-primary" />
 						)}
@@ -150,7 +157,7 @@ export function VersionSelector({
 			<DropdownMenuContent align="start" className="w-[250px]">
 				<DropdownMenuLabel>Content Versions</DropdownMenuLabel>
 				<DropdownMenuSeparator />
-				
+
 				{sortedVersions.map((version) => (
 					<DropdownMenuItem
 						key={version.id}
@@ -165,7 +172,10 @@ export function VersionSelector({
 								<div className="flex items-center gap-1">
 									<span className="text-sm">{version.name}</span>
 									{version.aiGenerated && (
-										<Badge variant="secondary" className="ai-badge h-4 px-1 text-xs">
+										<Badge
+											variant="secondary"
+											className="ai-badge h-4 px-1 text-xs"
+										>
 											AI
 										</Badge>
 									)}
@@ -192,7 +202,7 @@ export function VersionSelector({
 						)}
 					</DropdownMenuItem>
 				))}
-				
+
 				{allowCreate && onVersionCreate && (
 					<>
 						<DropdownMenuSeparator />

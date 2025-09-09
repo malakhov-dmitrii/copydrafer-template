@@ -113,7 +113,9 @@ export function DraftEditor({
 	const [localDraft, setLocalDraft] = useState<Draft>(draft);
 	const [isSaving, setIsSaving] = useState(false);
 	const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-	const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+	const [validationErrors, setValidationErrors] = useState<
+		Record<string, string>
+	>({});
 	const [showPublishDialog, setShowPublishDialog] = useState(false);
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 	const [showTagInput, setShowTagInput] = useState(false);
@@ -137,7 +139,7 @@ export function DraftEditor({
 
 	// Track unsaved changes
 	useEffect(() => {
-		const hasChanges = 
+		const hasChanges =
 			localDraft.title !== draft.title ||
 			localDraft.description !== draft.description ||
 			localDraft.content !== draft.content ||
@@ -243,23 +245,32 @@ export function DraftEditor({
 		}
 	}, [newTag, localDraft, onTagAdd]);
 
-	const handleRemoveTag = useCallback((tag: string) => {
-		const updatedTags = localDraft.tags.filter((t) => t !== tag);
-		setLocalDraft({ ...localDraft, tags: updatedTags });
-		if (onTagRemove) {
-			onTagRemove(tag);
-		}
-	}, [localDraft, onTagRemove]);
+	const handleRemoveTag = useCallback(
+		(tag: string) => {
+			const updatedTags = localDraft.tags.filter((t) => t !== tag);
+			setLocalDraft({ ...localDraft, tags: updatedTags });
+			if (onTagRemove) {
+				onTagRemove(tag);
+			}
+		},
+		[localDraft, onTagRemove],
+	);
 
-	const handleContentChange = useCallback((content: string) => {
-		setLocalDraft({ ...localDraft, content });
-	}, [localDraft]);
+	const handleContentChange = useCallback(
+		(content: string) => {
+			setLocalDraft({ ...localDraft, content });
+		},
+		[localDraft],
+	);
 
-	const handleAIMessage = useCallback(async (message: string): Promise<string> => {
-		// Mock AI response for now
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-		return `Here's an improved version of your content based on: "${message}"`;
-	}, []);
+	const handleAIMessage = useCallback(
+		async (message: string): Promise<string> => {
+			// Mock AI response for now
+			await new Promise((resolve) => setTimeout(resolve, 1000));
+			return `Here's an improved version of your content based on: "${message}"`;
+		},
+		[],
+	);
 
 	const editorContent = (
 		<div className="flex h-full flex-col">
@@ -270,14 +281,18 @@ export function DraftEditor({
 					<div className="space-y-2">
 						<Input
 							value={localDraft.title}
-							onChange={(e) => setLocalDraft({ ...localDraft, title: e.target.value })}
+							onChange={(e) =>
+								setLocalDraft({ ...localDraft, title: e.target.value })
+							}
 							placeholder="Draft title..."
-							className="text-2xl font-bold"
+							className="font-bold text-2xl"
 							disabled={readOnly}
 							aria-label="Draft title"
 						/>
 						{validationErrors.title && (
-							<p className="text-destructive text-sm">{validationErrors.title}</p>
+							<p className="text-destructive text-sm">
+								{validationErrors.title}
+							</p>
 						)}
 					</div>
 
@@ -285,14 +300,18 @@ export function DraftEditor({
 					<div className="space-y-2">
 						<Textarea
 							value={localDraft.description || ""}
-							onChange={(e) => setLocalDraft({ ...localDraft, description: e.target.value })}
+							onChange={(e) =>
+								setLocalDraft({ ...localDraft, description: e.target.value })
+							}
 							placeholder="Brief description..."
 							className="min-h-[60px] resize-none"
 							disabled={readOnly}
 							aria-label="Draft description"
 						/>
 						{validationErrors.description && (
-							<p className="text-destructive text-sm">{validationErrors.description}</p>
+							<p className="text-destructive text-sm">
+								{validationErrors.description}
+							</p>
 						)}
 					</div>
 
@@ -303,7 +322,10 @@ export function DraftEditor({
 							<Select
 								value={localDraft.status}
 								onValueChange={(value) => {
-									setLocalDraft({ ...localDraft, status: value as Draft["status"] });
+									setLocalDraft({
+										...localDraft,
+										status: value as Draft["status"],
+									});
 									if (onStatusChange) {
 										onStatusChange(value as Draft["status"]);
 									}
@@ -335,12 +357,8 @@ export function DraftEditor({
 							{/* Stats */}
 							{(showWordCount || showCharCount) && (
 								<div className="flex items-center gap-3 text-muted-foreground text-sm">
-									{showWordCount && (
-										<span>{stats.wordCount} words</span>
-									)}
-									{showCharCount && (
-										<span>{stats.charCount} characters</span>
-									)}
+									{showWordCount && <span>{stats.wordCount} words</span>}
+									{showCharCount && <span>{stats.charCount} characters</span>}
 								</div>
 							)}
 						</div>
@@ -378,10 +396,7 @@ export function DraftEditor({
 									)}
 								</Button>
 								{onPublish && localDraft.status === "draft" && (
-									<Button
-										size="sm"
-										onClick={() => setShowPublishDialog(true)}
-									>
+									<Button size="sm" onClick={() => setShowPublishDialog(true)}>
 										<Send className="mr-2 h-4 w-4" />
 										Publish
 									</Button>
@@ -484,7 +499,9 @@ export function DraftEditor({
 					autoSave={false}
 				/>
 				{validationErrors.content && (
-					<p className="px-4 py-2 text-destructive text-sm">{validationErrors.content}</p>
+					<p className="px-4 py-2 text-destructive text-sm">
+						{validationErrors.content}
+					</p>
 				)}
 			</div>
 		</div>
@@ -517,11 +534,15 @@ export function DraftEditor({
 					<DialogHeader>
 						<DialogTitle>Ready to Publish?</DialogTitle>
 						<DialogDescription>
-							This will make your draft public. Are you sure you want to publish?
+							This will make your draft public. Are you sure you want to
+							publish?
 						</DialogDescription>
 					</DialogHeader>
 					<DialogFooter>
-						<Button variant="outline" onClick={() => setShowPublishDialog(false)}>
+						<Button
+							variant="outline"
+							onClick={() => setShowPublishDialog(false)}
+						>
 							Cancel
 						</Button>
 						<Button onClick={handlePublish}>
@@ -538,7 +559,8 @@ export function DraftEditor({
 					<AlertDialogHeader>
 						<AlertDialogTitle>Are you sure?</AlertDialogTitle>
 						<AlertDialogDescription>
-							This will permanently delete this draft and all its versions. This action cannot be undone.
+							This will permanently delete this draft and all its versions. This
+							action cannot be undone.
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>

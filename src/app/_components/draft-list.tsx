@@ -12,7 +12,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import {
 	Dialog,
 	DialogContent,
@@ -108,7 +115,9 @@ export function DraftList({
 	const [searchTerm, setSearchTerm] = useState("");
 	const [statusFilter, setStatusFilter] = useState<string>("all");
 	const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
-	const [sortBy, setSortBy] = useState<"updated" | "created" | "title">("updated");
+	const [sortBy, setSortBy] = useState<"updated" | "created" | "title">(
+		"updated",
+	);
 	const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 	const [currentPage, setCurrentPage] = useState(1);
 	const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -139,7 +148,9 @@ export function DraftList({
 				(draft) =>
 					draft.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					draft.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-					draft.tags?.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase())),
+					draft.tags?.some((tag) =>
+						tag.toLowerCase().includes(searchTerm.toLowerCase()),
+					),
 			);
 		}
 
@@ -208,12 +219,15 @@ export function DraftList({
 		}
 	}, [onDraftCreate, newDraft]);
 
-	const handleDeleteDraft = useCallback((draftId: string) => {
-		if (onDraftDelete) {
-			onDraftDelete(draftId);
-			setShowDeleteDialog(null);
-		}
-	}, [onDraftDelete]);
+	const handleDeleteDraft = useCallback(
+		(draftId: string) => {
+			if (onDraftDelete) {
+				onDraftDelete(draftId);
+				setShowDeleteDialog(null);
+			}
+		},
+		[onDraftDelete],
+	);
 
 	const getStatusColor = (status: Draft["status"]) => {
 		switch (status) {
@@ -238,9 +252,14 @@ export function DraftList({
 
 	if (drafts.length === 0 && !showCreateDialog) {
 		return (
-			<div className={cn("flex flex-col items-center justify-center p-8", className)}>
+			<div
+				className={cn(
+					"flex flex-col items-center justify-center p-8",
+					className,
+				)}
+			>
 				<FileText className="mb-4 h-12 w-12 text-muted-foreground/50" />
-				<h3 className="mb-2 text-lg font-semibold">No drafts found</h3>
+				<h3 className="mb-2 font-semibold text-lg">No drafts found</h3>
 				<p className="mb-4 text-center text-muted-foreground">
 					Create your first draft to get started with content creation
 				</p>
@@ -259,7 +278,7 @@ export function DraftList({
 			{/* Header Controls */}
 			<div className="flex flex-col gap-4">
 				<div className="flex items-center justify-between">
-					<h2 className="text-2xl font-bold">Drafts</h2>
+					<h2 className="font-bold text-2xl">Drafts</h2>
 					{onDraftCreate && (
 						<Button onClick={() => setShowCreateDialog(true)}>
 							<Plus className="mr-2 h-4 w-4" />
@@ -271,7 +290,7 @@ export function DraftList({
 				{/* Search and Filters */}
 				<div className="flex flex-wrap items-center gap-2">
 					{showSearch && (
-						<div className="relative flex-1 min-w-[200px]">
+						<div className="relative min-w-[200px] flex-1">
 							<Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
 							<Input
 								placeholder="Search drafts..."
@@ -284,7 +303,10 @@ export function DraftList({
 
 					{showFilters && (
 						<Select value={statusFilter} onValueChange={setStatusFilter}>
-							<SelectTrigger className="w-[150px]" aria-label="Filter by status">
+							<SelectTrigger
+								className="w-[150px]"
+								aria-label="Filter by status"
+							>
 								<Filter className="mr-2 h-4 w-4" />
 								<SelectValue placeholder="All Status" />
 							</SelectTrigger>
@@ -298,11 +320,14 @@ export function DraftList({
 					)}
 
 					{showSort && (
-						<Select value={`${sortBy}-${sortOrder}`} onValueChange={(value) => {
-							const [newSortBy, newSortOrder] = value.split("-");
-							setSortBy(newSortBy as typeof sortBy);
-							setSortOrder(newSortOrder as typeof sortOrder);
-						}}>
+						<Select
+							value={`${sortBy}-${sortOrder}`}
+							onValueChange={(value) => {
+								const [newSortBy, newSortOrder] = value.split("-");
+								setSortBy(newSortBy as typeof sortBy);
+								setSortOrder(newSortOrder as typeof sortOrder);
+							}}
+						>
 							<SelectTrigger className="w-[180px]" aria-label="Sort by">
 								<SortAsc className="mr-2 h-4 w-4" />
 								<SelectValue placeholder="Sort by" />
@@ -360,7 +385,10 @@ export function DraftList({
 
 			{/* Drafts Display */}
 			{viewMode === "grid" ? (
-				<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" data-testid="draft-grid-view">
+				<div
+					className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+					data-testid="draft-grid-view"
+				>
 					{paginatedDrafts.map((draft) => (
 						<Card
 							key={draft.id}
@@ -369,30 +397,45 @@ export function DraftList({
 						>
 							<CardHeader className="pb-3">
 								<div className="flex items-start justify-between">
-									<CardTitle className="line-clamp-2 text-base" data-testid="draft-title">
+									<CardTitle
+										className="line-clamp-2 text-base"
+										data-testid="draft-title"
+									>
 										{draft.title}
 									</CardTitle>
 									<DropdownMenu>
-										<DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-											<Button size="icon" variant="ghost" className="h-8 w-8" aria-label="More options">
+										<DropdownMenuTrigger
+											asChild
+											onClick={(e) => e.stopPropagation()}
+										>
+											<Button
+												size="icon"
+												variant="ghost"
+												className="h-8 w-8"
+												aria-label="More options"
+											>
 												<MoreVertical className="h-4 w-4" />
 											</Button>
 										</DropdownMenuTrigger>
 										<DropdownMenuContent align="end">
 											{onDraftEdit && (
-												<DropdownMenuItem onClick={(e) => {
-													e.stopPropagation();
-													onDraftEdit(draft.id);
-												}}>
+												<DropdownMenuItem
+													onClick={(e) => {
+														e.stopPropagation();
+														onDraftEdit(draft.id);
+													}}
+												>
 													<Edit className="mr-2 h-4 w-4" />
 													Edit
 												</DropdownMenuItem>
 											)}
 											{onDraftDuplicate && (
-												<DropdownMenuItem onClick={(e) => {
-													e.stopPropagation();
-													onDraftDuplicate(draft.id);
-												}}>
+												<DropdownMenuItem
+													onClick={(e) => {
+														e.stopPropagation();
+														onDraftDuplicate(draft.id);
+													}}
+												>
 													<Copy className="mr-2 h-4 w-4" />
 													Duplicate
 												</DropdownMenuItem>
@@ -432,13 +475,16 @@ export function DraftList({
 							</CardContent>
 							<CardFooter className="flex flex-col items-start gap-2 text-muted-foreground text-xs">
 								<div className="flex w-full items-center justify-between">
-									<Badge variant={getStatusColor(draft.status)}>{draft.status}</Badge>
+									<Badge variant={getStatusColor(draft.status)}>
+										{draft.status}
+									</Badge>
 									<div className="flex items-center gap-1">
 										<Clock className="h-3 w-3" />
 										{format(draft.updatedAt, "MMM d, yyyy")}
 									</div>
 								</div>
-								{(draft.wordCount !== undefined || draft.versionCount !== undefined) && (
+								{(draft.wordCount !== undefined ||
+									draft.versionCount !== undefined) && (
 									<div className="flex w-full items-center justify-between">
 										{draft.wordCount !== undefined && (
 											<span>{draft.wordCount.toLocaleString()} words</span>
@@ -463,11 +509,17 @@ export function DraftList({
 							<CardContent className="flex items-center justify-between p-4">
 								<div className="flex-1 space-y-1">
 									<div className="flex items-center gap-2">
-										<h3 className="font-medium" data-testid="draft-title">{draft.title}</h3>
-										<Badge variant={getStatusColor(draft.status)}>{draft.status}</Badge>
+										<h3 className="font-medium" data-testid="draft-title">
+											{draft.title}
+										</h3>
+										<Badge variant={getStatusColor(draft.status)}>
+											{draft.status}
+										</Badge>
 									</div>
 									{draft.description && (
-										<p className="text-muted-foreground text-sm">{draft.description}</p>
+										<p className="text-muted-foreground text-sm">
+											{draft.description}
+										</p>
 									)}
 									<div className="flex items-center gap-4 text-muted-foreground text-xs">
 										<div className="flex items-center gap-1">
@@ -487,26 +539,37 @@ export function DraftList({
 									</div>
 								</div>
 								<DropdownMenu>
-									<DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-										<Button size="icon" variant="ghost" aria-label="More options">
+									<DropdownMenuTrigger
+										asChild
+										onClick={(e) => e.stopPropagation()}
+									>
+										<Button
+											size="icon"
+											variant="ghost"
+											aria-label="More options"
+										>
 											<MoreVertical className="h-4 w-4" />
 										</Button>
 									</DropdownMenuTrigger>
 									<DropdownMenuContent align="end">
 										{onDraftEdit && (
-											<DropdownMenuItem onClick={(e) => {
-												e.stopPropagation();
-												onDraftEdit(draft.id);
-											}}>
+											<DropdownMenuItem
+												onClick={(e) => {
+													e.stopPropagation();
+													onDraftEdit(draft.id);
+												}}
+											>
 												<Edit className="mr-2 h-4 w-4" />
 												Edit
 											</DropdownMenuItem>
 										)}
 										{onDraftDuplicate && (
-											<DropdownMenuItem onClick={(e) => {
-												e.stopPropagation();
-												onDraftDuplicate(draft.id);
-											}}>
+											<DropdownMenuItem
+												onClick={(e) => {
+													e.stopPropagation();
+													onDraftDuplicate(draft.id);
+												}}
+											>
 												<Copy className="mr-2 h-4 w-4" />
 												Duplicate
 											</DropdownMenuItem>
@@ -576,7 +639,9 @@ export function DraftList({
 							<Input
 								id="draft-title"
 								value={newDraft.title || ""}
-								onChange={(e) => setNewDraft({ ...newDraft, title: e.target.value })}
+								onChange={(e) =>
+									setNewDraft({ ...newDraft, title: e.target.value })
+								}
 								placeholder="Enter draft title..."
 							/>
 						</div>
@@ -585,14 +650,19 @@ export function DraftList({
 							<Textarea
 								id="draft-description"
 								value={newDraft.description || ""}
-								onChange={(e) => setNewDraft({ ...newDraft, description: e.target.value })}
+								onChange={(e) =>
+									setNewDraft({ ...newDraft, description: e.target.value })
+								}
 								placeholder="Optional description..."
 								className="min-h-[80px]"
 							/>
 						</div>
 					</div>
 					<DialogFooter>
-						<Button variant="outline" onClick={() => setShowCreateDialog(false)}>
+						<Button
+							variant="outline"
+							onClick={() => setShowCreateDialog(false)}
+						>
 							Cancel
 						</Button>
 						<Button onClick={handleCreateDraft} disabled={!newDraft.title}>
@@ -603,19 +673,25 @@ export function DraftList({
 			</Dialog>
 
 			{/* Delete Confirmation Dialog */}
-			<AlertDialog open={!!showDeleteDialog} onOpenChange={() => setShowDeleteDialog(null)}>
+			<AlertDialog
+				open={!!showDeleteDialog}
+				onOpenChange={() => setShowDeleteDialog(null)}
+			>
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>Are you sure?</AlertDialogTitle>
 						<AlertDialogDescription>
-							This action cannot be undone. This will permanently delete the draft and all its versions.
+							This action cannot be undone. This will permanently delete the
+							draft and all its versions.
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>Cancel</AlertDialogCancel>
 						<AlertDialogAction
 							className="bg-destructive text-destructive-foreground"
-							onClick={() => showDeleteDialog && handleDeleteDraft(showDeleteDialog)}
+							onClick={() =>
+								showDeleteDialog && handleDeleteDraft(showDeleteDialog)
+							}
 						>
 							Confirm Delete
 						</AlertDialogAction>
