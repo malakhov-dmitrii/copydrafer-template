@@ -7,14 +7,38 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { auth } from "@/server/auth";
 import {
 	ArrowDown,
 	ArrowUp,
 	Clock,
+	Eye,
 	FileText,
 	MoreHorizontal,
+	Pencil,
 	Plus,
+	Trash2,
 	TrendingUp,
 	Users,
 } from "lucide-react";
@@ -93,197 +117,226 @@ export default async function DashboardPage() {
 	];
 
 	return (
-		<div>
+		<div className="flex flex-col gap-4 p-3">
 			{/* Welcome Section */}
-			<div className="mb-8">
-				<h2 className="mb-2 font-bold text-2xl text-foreground">
+			<div>
+				<h2 className="mb-1 font-bold text-foreground text-xl leading-tight">
 					Welcome back, {session?.user.name || "there"}!
 				</h2>
-				<p className="text-muted-foreground">
+				<p className="text-muted-foreground text-sm">
 					Here's what's happening with your content today.
 				</p>
 			</div>
 
-			{/* Stats Grid */}
-			<div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-				{stats.map((stat) => (
-					<Card key={stat.name}>
-						<CardContent className="p-6">
-							<div className="mb-4 flex items-center justify-between">
-								<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-									<stat.icon className="h-5 w-5 text-primary" />
+			<Separator />
+
+			{/* Main Grid: Stats + Quick Actions */}
+			<div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+				{/* Stats Grid - Takes 2 columns on desktop */}
+				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-2">
+					<TooltipProvider>
+						{stats.map((stat) => (
+							<Card
+								key={stat.name}
+								className="transition-shadow hover:shadow-sm"
+							>
+								<CardContent className="p-4">
+									<div className="mb-3 flex items-center justify-between">
+										<Tooltip>
+											<TooltipTrigger asChild>
+												<div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+													<stat.icon className="h-4 w-4 text-primary" />
+												</div>
+											</TooltipTrigger>
+											<TooltipContent>
+												<p>{stat.name}</p>
+											</TooltipContent>
+										</Tooltip>
+										<Badge
+											variant={
+												stat.changeType === "increase"
+													? "default"
+													: stat.changeType === "decrease"
+														? "destructive"
+														: "secondary"
+											}
+											className="flex items-center text-xs"
+										>
+											{stat.change}
+											{stat.changeType === "increase" && (
+												<ArrowUp className="ml-1 h-3 w-3" />
+											)}
+											{stat.changeType === "decrease" && (
+												<ArrowDown className="ml-1 h-3 w-3" />
+											)}
+										</Badge>
+									</div>
+									<div>
+										<p className="font-bold text-foreground text-xl leading-none">
+											{stat.value}
+										</p>
+										<p className="mt-1.5 text-muted-foreground text-sm">
+											{stat.name}
+										</p>
+									</div>
+								</CardContent>
+							</Card>
+						))}
+					</TooltipProvider>
+				</div>
+
+				{/* Quick Actions - Single column on desktop */}
+				<div className="flex flex-col gap-4">
+					<Card className="group transition-shadow hover:shadow-sm">
+						<CardContent className="p-4">
+							<Link
+								href="/dashboard/content/new"
+								className="flex items-center justify-between"
+							>
+								<div className="flex-1">
+									<CardTitle className="mb-0.5 text-base">
+										Create New Content
+									</CardTitle>
+									<CardDescription className="text-xs">
+										Start writing with AI
+									</CardDescription>
 								</div>
-								<Badge
-									variant={
-										stat.changeType === "increase"
-											? "default"
-											: stat.changeType === "decrease"
-												? "destructive"
-												: "secondary"
-									}
-									className="flex items-center"
-								>
-									{stat.change}
-									{stat.changeType === "increase" && (
-										<ArrowUp className="ml-1 h-3 w-3" />
-									)}
-									{stat.changeType === "decrease" && (
-										<ArrowDown className="ml-1 h-3 w-3" />
-									)}
-								</Badge>
-							</div>
-							<div>
-								<p className="font-bold text-2xl text-foreground">
-									{stat.value}
-								</p>
-								<p className="mt-1 text-muted-foreground text-sm">
-									{stat.name}
-								</p>
-							</div>
+								<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20">
+									<Plus className="h-4 w-4 text-primary" />
+								</div>
+							</Link>
 						</CardContent>
 					</Card>
-				))}
+					<Card className="group transition-shadow hover:shadow-sm">
+						<CardContent className="p-4">
+							<Link
+								href="/dashboard/templates"
+								className="flex items-center justify-between"
+							>
+								<div className="flex-1">
+									<CardTitle className="mb-0.5 text-base">
+										Browse Templates
+									</CardTitle>
+									<CardDescription className="text-xs">
+										Find the perfect starting point
+									</CardDescription>
+								</div>
+								<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20">
+									<FileText className="h-4 w-4 text-primary" />
+								</div>
+							</Link>
+						</CardContent>
+					</Card>
+					<Card className="group transition-shadow hover:shadow-sm">
+						<CardContent className="p-4">
+							<Link
+								href="/dashboard/analytics"
+								className="flex items-center justify-between"
+							>
+								<div className="flex-1">
+									<CardTitle className="mb-0.5 text-base">
+										View Analytics
+									</CardTitle>
+									<CardDescription className="text-xs">
+										Track your performance
+									</CardDescription>
+								</div>
+								<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20">
+									<TrendingUp className="h-4 w-4 text-primary" />
+								</div>
+							</Link>
+						</CardContent>
+					</Card>
+				</div>
 			</div>
+
+			<Separator />
 
 			{/* Recent Content */}
 			<Card>
-				<CardHeader>
+				<CardHeader className="pb-3">
 					<div className="flex items-center justify-between">
-						<CardTitle>Recent Content</CardTitle>
-						<Button variant="link" asChild>
+						<CardTitle className="text-base">Recent Content</CardTitle>
+						<Button variant="link" size="sm" asChild className="h-auto p-0">
 							<Link href="/dashboard/content">View all</Link>
 						</Button>
 					</div>
 				</CardHeader>
-				<CardContent>
-					<div className="overflow-x-auto">
-						<table className="w-full">
-							<thead>
-								<tr className="border-b">
-									<th className="px-6 py-3 text-left font-medium text-muted-foreground text-xs uppercase tracking-wider">
-										Title
-									</th>
-									<th className="px-6 py-3 text-left font-medium text-muted-foreground text-xs uppercase tracking-wider">
-										Type
-									</th>
-									<th className="px-6 py-3 text-left font-medium text-muted-foreground text-xs uppercase tracking-wider">
-										Status
-									</th>
-									<th className="px-6 py-3 text-left font-medium text-muted-foreground text-xs uppercase tracking-wider">
-										Views
-									</th>
-									<th className="px-6 py-3 text-left font-medium text-muted-foreground text-xs uppercase tracking-wider">
-										Date
-									</th>
-									<th className="px-6 py-3 text-left font-medium text-muted-foreground text-xs uppercase tracking-wider">
-										Actions
-									</th>
-								</tr>
-							</thead>
-							<tbody className="divide-y">
-								{recentContent.map((content) => (
-									<tr key={content.id} className="hover:bg-muted/50">
-										<td className="whitespace-nowrap px-6 py-4">
-											<div className="font-medium text-foreground text-sm">
-												{content.title}
-											</div>
-										</td>
-										<td className="whitespace-nowrap px-6 py-4">
-											<span className="text-muted-foreground text-sm">
-												{content.type}
-											</span>
-										</td>
-										<td className="whitespace-nowrap px-6 py-4">
-											<Badge
-												variant={
-													content.status === "Published"
-														? "default"
-														: content.status === "Draft"
-															? "secondary"
-															: "outline"
-												}
-											>
-												{content.status}
-											</Badge>
-										</td>
-										<td className="whitespace-nowrap px-6 py-4 text-muted-foreground text-sm">
-											{content.views.toLocaleString()}
-										</td>
-										<td className="whitespace-nowrap px-6 py-4 text-muted-foreground text-sm">
-											{content.date}
-										</td>
-										<td className="whitespace-nowrap px-6 py-4 text-right font-medium text-sm">
-											<Button variant="ghost" size="sm">
-												<MoreHorizontal className="h-4 w-4" />
-											</Button>
-										</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
-					</div>
+				<CardContent className="p-0">
+					<Table>
+						<TableHeader>
+							<TableRow>
+								<TableHead className="font-semibold text-sm">Title</TableHead>
+								<TableHead className="font-semibold text-sm">Type</TableHead>
+								<TableHead className="font-semibold text-sm">Status</TableHead>
+								<TableHead className="font-semibold text-sm">Views</TableHead>
+								<TableHead className="font-semibold text-sm">Date</TableHead>
+								<TableHead className="w-[50px]" />
+							</TableRow>
+						</TableHeader>
+						<TableBody>
+							{recentContent.map((content) => (
+								<TableRow key={content.id}>
+									<TableCell className="font-medium text-sm">
+										{content.title}
+									</TableCell>
+									<TableCell className="text-muted-foreground text-sm">
+										{content.type}
+									</TableCell>
+									<TableCell>
+										<Badge
+											variant={
+												content.status === "Published"
+													? "default"
+													: content.status === "Draft"
+														? "secondary"
+														: "outline"
+											}
+											className="text-xs"
+										>
+											{content.status}
+										</Badge>
+									</TableCell>
+									<TableCell className="text-muted-foreground text-sm">
+										{content.views.toLocaleString()}
+									</TableCell>
+									<TableCell className="text-muted-foreground text-sm">
+										{content.date}
+									</TableCell>
+									<TableCell>
+										<DropdownMenu>
+											<DropdownMenuTrigger asChild>
+												<Button
+													variant="ghost"
+													size="sm"
+													className="h-8 w-8 p-0"
+												>
+													<span className="sr-only">Open menu</span>
+													<MoreHorizontal className="h-4 w-4" />
+												</Button>
+											</DropdownMenuTrigger>
+											<DropdownMenuContent align="end">
+												<DropdownMenuItem>
+													<Eye className="mr-2 h-4 w-4" />
+													View
+												</DropdownMenuItem>
+												<DropdownMenuItem>
+													<Pencil className="mr-2 h-4 w-4" />
+													Edit
+												</DropdownMenuItem>
+												<DropdownMenuItem className="text-destructive">
+													<Trash2 className="mr-2 h-4 w-4" />
+													Delete
+												</DropdownMenuItem>
+											</DropdownMenuContent>
+										</DropdownMenu>
+									</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
 				</CardContent>
 			</Card>
-
-			{/* Quick Actions */}
-			<div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-				<Card className="group transition-shadow hover:shadow-md">
-					<CardContent className="p-6">
-						<Link
-							href="/dashboard/content/new"
-							className="flex items-center justify-between"
-						>
-							<div>
-								<CardTitle className="mb-1 text-lg">
-									Create New Content
-								</CardTitle>
-								<CardDescription>
-									Start writing with AI assistance
-								</CardDescription>
-							</div>
-							<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20">
-								<Plus className="h-5 w-5 text-primary" />
-							</div>
-						</Link>
-					</CardContent>
-				</Card>
-				<Card className="group transition-shadow hover:shadow-md">
-					<CardContent className="p-6">
-						<Link
-							href="/dashboard/templates"
-							className="flex items-center justify-between"
-						>
-							<div>
-								<CardTitle className="mb-1 text-lg">Browse Templates</CardTitle>
-								<CardDescription>
-									Find the perfect starting point
-								</CardDescription>
-							</div>
-							<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20">
-								<FileText className="h-5 w-5 text-primary" />
-							</div>
-						</Link>
-					</CardContent>
-				</Card>
-				<Card className="group transition-shadow hover:shadow-md">
-					<CardContent className="p-6">
-						<Link
-							href="/dashboard/analytics"
-							className="flex items-center justify-between"
-						>
-							<div>
-								<CardTitle className="mb-1 text-lg">View Analytics</CardTitle>
-								<CardDescription>
-									Track your content performance
-								</CardDescription>
-							</div>
-							<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20">
-								<TrendingUp className="h-5 w-5 text-primary" />
-							</div>
-						</Link>
-					</CardContent>
-				</Card>
-			</div>
 		</div>
 	);
 }

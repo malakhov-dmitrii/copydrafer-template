@@ -51,6 +51,6 @@ export const auth = betterAuth({
 			disableSignUp: false, // Allow users to sign up with magic link
 		}),
 	],
-	baseURL: env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+	baseURL: env.NEXT_PUBLIC_BASE_URL || "http://localhost:3005",
 	secret: env.AUTH_SECRET || "development-secret-change-me",
 });
