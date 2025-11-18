@@ -6,13 +6,9 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": false,
-    "ignore": []
+    "ignoreUnknown": false
   },
   "formatter": {
-    "enabled": true
-  },
-  "organizeImports": {
     "enabled": true
   },
   "linter": {
@@ -23,20 +19,12 @@
           "level": "warn",
           "fix": "safe",
           "options": {
-            "functions": [
-              "clsx",
-              "cva",
-              "cn"
-            ]
+            "functions": ["clsx", "cva", "cn"]
           }
         }
       },
       "recommended": true
     }
   },
-  "extends": [
-    "ultracite/core",
-    "ultracite/react",
-    "ultracite/next"
-  ]
+  "extends": ["ultracite/core", "ultracite/react", "ultracite/next"]
 }

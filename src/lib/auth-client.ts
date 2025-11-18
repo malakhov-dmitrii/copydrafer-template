@@ -6,8 +6,8 @@ import { createAuthClient } from "better-auth/react";
  * Provides hooks and methods for client-side authentication.
  */
 export const authClient = createAuthClient({
-	baseURL: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
-	plugins: [magicLinkClient()],
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+  plugins: [magicLinkClient()],
 });
 
 // Export authentication functions for use in components

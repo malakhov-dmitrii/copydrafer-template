@@ -1,3 +1,1 @@
-import { auth } from "./config";
-
-export { auth };
+export { auth } from "./config";
